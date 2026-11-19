@@ -1,0 +1,9 @@
+# Only the public website goes to GitHub Pages. Internal/working files stay local.
+.claude/
+.DS_Store
+PROJECT_NOTES.md
+design-system/
+tools/
+_test*.html
+# Original artwork PNGs (1.4–1.9 MB each); the site uses the WebP versions
+img/*.png

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://huynl58.github.io/calm-coffee-supply/sitemap.xml
