@@ -48,7 +48,7 @@
         "@id": "https://huynl58.github.io/calm-coffee-supply/#org",
         "name": "Calm Coffee Supply",
         "url": "https://huynl58.github.io/calm-coffee-supply/",
-        "logo": "https://huynl58.github.io/calm-coffee-supply/favicon.svg",
+        "logo": "https://huynl58.github.io/calm-coffee-supply/logo.svg",
         "image": "https://huynl58.github.io/calm-coffee-supply/og-image.jpg",
         "telephone": "+84327193248",
         "email": "coffeearoundtheworld@gmail.com",
@@ -138,12 +138,14 @@
         <span class="menu-toggle__bars" aria-hidden="true"></span><span class="menu-toggle__text">Menu</span>
       </button>
       <a href="./" class="logo" aria-label="Calm Coffee Supply home">
-        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12 4.5 16 7.5 20 4.5" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M21.4 13.5A7 7 0 1 0 21.4 22.5" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M11 30H21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 99 160" aria-hidden="true"><path d="M52.0505 35.999C50.4363 37.804 47.6066 37.804 45.9726 35.999L19.9075 6.85886C17.5361 4.21158 19.4093 0 22.9364 0H75.0667C78.6138 0 80.467 4.21158 78.0957 6.85886L52.0305 35.999H52.0505Z" fill="currentColor"/><path d="M67.8729 97.107C65.5813 105.45 58.0487 111.607 49.0216 111.607C38.181 111.607 29.4129 102.763 29.4129 91.8727C29.4129 80.9827 38.2009 72.1384 49.0216 72.1384C58.6266 72.1384 66.5976 79.0975 68.2914 88.2627H97.8638C96.0105 62.7125 74.8874 42.537 49.0216 42.537C23.1557 42.537 0 64.6378 0 91.8727C0 119.108 21.9601 141.208 49.0216 141.208C74.3294 141.208 95.1138 121.875 97.7243 97.107H67.8729Z" fill="currentColor" fill-rule="evenodd"/><path d="M19.6 158.2H78.5" stroke="currentColor" stroke-width="3.5"/></svg>
         <span>Calm Coffee Supply</span>
       </a>
       <nav id="site-menu" aria-label="Main">
         <ul>
           <li><a href="#coffee">Our Coffee</a></li>
+          <li><a href="how-to-brew-phin-coffee/">Phin Guide</a></li>
+          <li><a href="about/">About</a></li>
           <li><a href="#process">Process</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -187,9 +189,7 @@
             </g>
             <text x="48" y="252" font-family="'Be Vietnam Pro', sans-serif" font-size="8" fill="#2a1a1c">Nguyên hạt ☐     Xay sẵn ☐</text>
             <text x="48" y="292" font-family="Oswald, 'Arial Narrow', sans-serif" font-size="22" font-weight="600" fill="#9b2a3a">CÀ PHÊ RANG MỘC</text>
-            <g transform="translate(222 266) scale(1.25)" stroke="#9b2a3a" fill="none" stroke-linecap="round">
-              <path d="M12 4.5 16 7.5 20 4.5" stroke-width="2.6" stroke-linejoin="round"/><path d="M21.4 13.5A7 7 0 1 0 21.4 22.5" stroke-width="4"/>
-            </g>
+            <g transform="translate(229.6 266.2) scale(.21)"><path d="M52.0505 35.999C50.4363 37.804 47.6066 37.804 45.9726 35.999L19.9075 6.85886C17.5361 4.21158 19.4093 0 22.9364 0H75.0667C78.6138 0 80.467 4.21158 78.0957 6.85886L52.0305 35.999H52.0505Z" fill="#9b2a3a"/><path d="M67.8729 97.107C65.5813 105.45 58.0487 111.607 49.0216 111.607C38.181 111.607 29.4129 102.763 29.4129 91.8727C29.4129 80.9827 38.2009 72.1384 49.0216 72.1384C58.6266 72.1384 66.5976 79.0975 68.2914 88.2627H97.8638C96.0105 62.7125 74.8874 42.537 49.0216 42.537C23.1557 42.537 0 64.6378 0 91.8727C0 119.108 21.9601 141.208 49.0216 141.208C74.3294 141.208 95.1138 121.875 97.7243 97.107H67.8729Z" fill="#9b2a3a" fill-rule="evenodd"/><path d="M19.6 158.2H78.5" stroke="#9b2a3a" stroke-width="3.5"/></g>
             <text x="48" y="303" font-family="'Be Vietnam Pro', sans-serif" font-size="8" font-weight="600" fill="#9b2a3a">Arabica ☐     Robusta ☐</text>
             <g fill="#2a1a1c" fill-opacity=".18"><rect x="48" y="318" width="200" height="4" rx="2"/><rect x="48" y="327" width="190" height="4" rx="2"/><rect x="48" y="336" width="160" height="4" rx="2"/></g>
             <text x="48" y="372" font-family="'Be Vietnam Pro', sans-serif" font-size="8" fill="#2a1a1c">Ngày rang:</text>
@@ -209,45 +209,45 @@
         </header>
 
         <div class="products">
-          <article class="product" data-coffee="Xuân (Spring)" data-arabica="100">
+          <article class="product" data-id="xuan" data-coffee="Xuân (Spring)" data-arabica="100">
             <figure class="season">
               <img src="../img/season-xuan.webp" srcset="../img/season-xuan.webp 640w, ../img/season-xuan-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Xuân (Spring) pure-roast Vietnamese coffee bag with a green spring meadow">
               <figcaption>Light-medium roast</figcaption>
             </figure>
-            <h3>Xuân · Spring</h3>
+            <h3><a href="coffee/xuan/">Xuân · Spring</a></h3>
             <p class="notes">Jasmine · Honey · Orange</p>
             <p>Clean, bright and floral. Great as pour-over or cold brew.</p>
             <div class="buy"><span class="price">From 120,000₫</span><a href="mailto:coffeearoundtheworld@gmail.com" class="btn btn-sm order">Order</a></div>
           </article>
 
-          <article class="product" data-coffee="Hạ (Summer)" data-arabica="50">
+          <article class="product" data-id="ha" data-coffee="Hạ (Summer)" data-arabica="50">
             <figure class="season">
               <img src="../img/season-ha.webp" srcset="../img/season-ha.webp 640w, ../img/season-ha-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Hạ (Summer) pure-roast Vietnamese coffee bag with a yellow flower field">
               <figcaption>Medium roast</figcaption>
             </figure>
-            <h3>Hạ · Summer</h3>
+            <h3><a href="coffee/ha/">Hạ · Summer</a></h3>
             <p class="notes">Caramel · Milk chocolate · Chestnut</p>
             <p>Balanced, gently sweet and easy to drink every day. Good in a phin or an espresso machine.</p>
             <div class="buy"><span class="price">From 120,000₫</span><a href="mailto:coffeearoundtheworld@gmail.com" class="btn btn-sm order">Order</a></div>
           </article>
 
-          <article class="product" data-coffee="Thu (Autumn)" data-arabica="0">
+          <article class="product" data-id="thu" data-coffee="Thu (Autumn)" data-arabica="0">
             <figure class="season">
               <img src="../img/season-thu.webp" srcset="../img/season-thu.webp 640w, ../img/season-thu-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Thu (Autumn) pure-roast Vietnamese coffee bag with red and orange autumn trees">
               <figcaption>Medium-dark roast</figcaption>
             </figure>
-            <h3>Thu · Autumn</h3>
+            <h3><a href="coffee/thu/">Thu · Autumn</a></h3>
             <p class="notes">Cacao · Palm sugar · Cinnamon</p>
             <p>Warm, round and sweet on the finish. Lovely with milk.</p>
             <div class="buy"><span class="price">From 120,000₫</span><a href="mailto:coffeearoundtheworld@gmail.com" class="btn btn-sm order">Order</a></div>
           </article>
 
-          <article class="product" data-coffee="Đông (Winter)" data-arabica="0">
+          <article class="product" data-id="dong" data-coffee="Đông (Winter)" data-arabica="0">
             <figure class="season">
               <img src="../img/season-dong.webp" srcset="../img/season-dong.webp 640w, ../img/season-dong-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Đông (Winter) pure-roast Vietnamese coffee bag with snowy mountains">
               <figcaption>Dark roast</figcaption>
             </figure>
-            <h3>Đông · Winter</h3>
+            <h3><a href="coffee/dong/">Đông · Winter</a></h3>
             <p class="notes">Dark chocolate · Roasted nuts · Bold</p>
             <p>Strong, heavy and bold. The classic choice for phin coffee and iced milk coffee.</p>
             <div class="buy"><span class="price">From 120,000₫</span><a href="mailto:coffeearoundtheworld@gmail.com" class="btn btn-sm order">Order</a></div>
@@ -272,7 +272,7 @@
           <li>
             <span class="num">02</span>
             <h3>Pure roast</h3>
-            <p>Roasted on their own, with no butter, sugar or flavorings, to keep the bean's true flavor.</p>
+            <p>We roast every batch ourselves in Cam Ranh, on its own, with no butter, sugar or flavorings, to keep the bean's true flavor.</p>
           </li>
           <li>
             <span class="num">03</span>
@@ -292,11 +292,11 @@
         </header>
         <details>
           <summary>What is pure-roast (rang mộc) coffee?</summary>
-          <p>It is coffee roasted on its own, without butter, sugar, rice wine or flavorings, which many traditional Vietnamese roasts add. All the flavor comes from the beans and the roast, so you taste the true character of Central Highlands coffee.</p>
+          <p>It is coffee roasted on its own, without butter, sugar, rice wine or flavorings, which many traditional Vietnamese roasts add. All the flavor comes from the beans and the roast, so you taste the true character of Central Highlands coffee. <a href="what-is-pure-roast-coffee/">Read more about pure-roast coffee</a>.</p>
         </details>
         <details>
           <summary>Which coffee is best for a Vietnamese phin filter?</summary>
-          <p>Phin coffee is best with plenty of Robusta and a darker roast, such as Đông or Thu, as 100% Robusta or with 20–30% Arabica for extra aroma. If you buy ground coffee, choose a phin grind (medium, slightly coarse) so it isn't harsh and doesn't clog the filter.</p>
+          <p>Phin coffee is best with plenty of Robusta and a darker roast, such as Đông or Thu, as 100% Robusta or with 20–30% Arabica for extra aroma. If you buy ground coffee, choose a phin grind (medium, slightly coarse) so it isn't harsh and doesn't clog the filter. <a href="how-to-brew-phin-coffee/">See the step-by-step phin guide</a>.</p>
         </details>
         <details>
           <summary>Should I buy whole bean or ground coffee?</summary>
@@ -374,6 +374,9 @@
         <a href="#process">Process</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
+        <a href="how-to-brew-phin-coffee/">How to brew phin coffee</a>
+        <a href="what-is-pure-roast-coffee/">What is pure-roast coffee?</a>
+        <a href="about/">About us</a>
         <a href="../" hreflang="vi" lang="vi">Tiếng Việt</a>
       </nav>
       <p class="small">© 2026 Calm Coffee Supply. All rights reserved.</p>

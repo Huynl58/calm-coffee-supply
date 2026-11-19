@@ -34,6 +34,16 @@
 
   const BASE = new URL(".", document.currentScript.src);   // site root (shop.js lives there)
   const vi = document.documentElement.lang === "vi";
+  const HOME = vi ? BASE : new URL("en/", BASE);                // this language's homepage
+
+  // The four coffees. Cart items store the id, so a cart works on every page.
+  const CATALOG = {
+    xuan: { vi: ["Xuân", "Rang sáng vừa"], en: ["Xuân (Spring)", "Light-medium roast"] },
+    ha:   { vi: ["Hạ", "Rang vừa"],        en: ["Hạ (Summer)", "Medium roast"] },
+    thu:  { vi: ["Thu", "Rang vừa đậm"],   en: ["Thu (Autumn)", "Medium-dark roast"] },
+    dong: { vi: ["Đông", "Rang đậm"],      en: ["Đông (Winter)", "Dark roast"] },
+  };
+  const IDS = Object.keys(CATALOG);
   const T = vi ? {
     beans: "Hạt cà phê", ratio: "Tỉ lệ phối trộn", grind: "Độ xay",
     whole: "Nguyên hạt", ground: "Xay sẵn", size: "Khối lượng", qty: "Số lượng",
@@ -127,14 +137,15 @@
   };
 
   /* ---------- Cart state (remembered in this browser) ---------- */
-  const cards = [...document.querySelectorAll(".product[data-coffee]")];
+  const cards = [...document.querySelectorAll(".product[data-id]")];
   const KEY = "ccs-cart";
   let cart = [];
   try { cart = JSON.parse(localStorage.getItem(KEY)) || []; } catch { cart = []; }
-  cart = cart.filter((it) => cards[it.idx] && Number.isFinite(it.a) && it.qty > 0);
+  cart.forEach((it) => { if (!it.id && Number.isInteger(it.idx)) it.id = IDS[it.idx]; });   // carts saved before ids existed
+  cart = cart.filter((it) => CATALOG[it.id] && Number.isFinite(it.a) && it.qty > 0);
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch { /* private mode */ } };
-  const coffeeName = (it) => cards[it.idx].dataset.coffee;
-  const roastName = (it) => cards[it.idx].querySelector("figcaption")?.textContent.trim() || "";
+  const coffeeName = (it) => CATALOG[it.id][vi ? "vi" : "en"][0];
+  const roastName = (it) => CATALOG[it.id][vi ? "vi" : "en"][1];
   const details = (it) => `${beanLabel(it.a)} · ${it.grind === "whole" ? T.whole : T.ground} · ${it.size}`;
   const count = () => cart.reduce((n, it) => n + it.qty, 0);
   const subtotal = () => cart.reduce((n, it) => n + unitPrice(it) * it.qty, 0);
@@ -189,7 +200,7 @@
     oldBtn.replaceWith(addBtn);
 
     const current = () => ({
-      idx: i,
+      id: card.dataset.id,
       a: ar.checked && ro.checked ? Number(range.value) : ar.checked ? 100 : 0,
       grind: $(`[name="${id}-grind"]:checked`).value,
       size: $(`[name="${id}-size"]:checked`).value,
@@ -215,7 +226,7 @@
 
     addBtn.addEventListener("click", () => {
       const it = current();
-      const same = cart.find((c) => c.idx === it.idx && c.a === it.a && c.grind === it.grind && c.size === it.size);
+      const same = cart.find((c) => c.id === it.id && c.a === it.a && c.grind === it.grind && c.size === it.size);
       if (same) same.qty = Math.min(CONFIG.maxQty, same.qty + it.qty); else cart.push(it);
       save(); refreshBadge();
       addBtn.textContent = T.added;
@@ -318,7 +329,12 @@
       case "rm": cart.splice(k, 1); break;
       case "checkout": render("checkout"); return;
       case "back": render("cart"); return;
-      case "browse": case "close": dlg.close(); if (b.dataset.act === "browse") document.getElementById("coffee")?.scrollIntoView(); return;
+      case "close": dlg.close(); return;
+      case "browse":
+        dlg.close();
+        if (document.getElementById("coffee")) document.getElementById("coffee").scrollIntoView();
+        else location.href = new URL("#coffee", HOME);
+        return;
       default: return;
     }
     save(); refreshBadge(); render("cart");
