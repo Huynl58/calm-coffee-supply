@@ -30,9 +30,8 @@
   <meta name="twitter:image" content="https://huynl58.github.io/calm-coffee-supply/og-image-en.jpg">
 
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+  <!-- Fonts are self-hosted: @font-face rules at the top of styles.css, files in fonts/ -->
+  <link rel="preload" as="image" href="../img/season-xuan.webp" fetchpriority="high">
   <link rel="stylesheet" href="../styles.css">
   <script src="../shop.js" defer></script>
   <script src="../menu.js" defer></script>
@@ -152,7 +151,7 @@
         </ul>
       </nav>
       <div class="nav-end">
-        <a href="../" class="lang" hreflang="vi" lang="vi" aria-label="Tiếng Việt">VI</a>
+        <a href="../" class="lang" hreflang="vi" lang="vi">VI<span class="sr-only"> (Tiếng Việt)</span></a>
         <a href="#coffee" class="btn btn-sm">Shop</a>
       </div>
     </div>
@@ -211,7 +210,7 @@
         <div class="products">
           <article class="product" data-id="xuan" data-coffee="Xuân (Spring)" data-arabica="100">
             <figure class="season">
-              <img src="../img/season-xuan.webp" srcset="../img/season-xuan.webp 640w, ../img/season-xuan-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Xuân (Spring) pure-roast Vietnamese coffee bag with a green spring meadow">
+              <img src="../img/season-xuan.webp" srcset="../img/season-xuan-320.webp 320w, ../img/season-xuan.webp 640w, ../img/season-xuan-960.webp 960w, ../img/season-xuan-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Xuân (Spring) pure-roast Vietnamese coffee bag with a green spring meadow">
               <figcaption>Light-medium roast</figcaption>
             </figure>
             <h3><a href="coffee/xuan/">Xuân · Spring</a></h3>
@@ -222,7 +221,7 @@
 
           <article class="product" data-id="ha" data-coffee="Hạ (Summer)" data-arabica="50">
             <figure class="season">
-              <img src="../img/season-ha.webp" srcset="../img/season-ha.webp 640w, ../img/season-ha-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Hạ (Summer) pure-roast Vietnamese coffee bag with a yellow flower field">
+              <img src="../img/season-ha.webp" srcset="../img/season-ha-320.webp 320w, ../img/season-ha.webp 640w, ../img/season-ha-960.webp 960w, ../img/season-ha-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Hạ (Summer) pure-roast Vietnamese coffee bag with a yellow flower field">
               <figcaption>Medium roast</figcaption>
             </figure>
             <h3><a href="coffee/ha/">Hạ · Summer</a></h3>
@@ -233,7 +232,7 @@
 
           <article class="product" data-id="thu" data-coffee="Thu (Autumn)" data-arabica="0">
             <figure class="season">
-              <img src="../img/season-thu.webp" srcset="../img/season-thu.webp 640w, ../img/season-thu-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Thu (Autumn) pure-roast Vietnamese coffee bag with red and orange autumn trees">
+              <img src="../img/season-thu.webp" srcset="../img/season-thu-320.webp 320w, ../img/season-thu.webp 640w, ../img/season-thu-960.webp 960w, ../img/season-thu-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Thu (Autumn) pure-roast Vietnamese coffee bag with red and orange autumn trees">
               <figcaption>Medium-dark roast</figcaption>
             </figure>
             <h3><a href="coffee/thu/">Thu · Autumn</a></h3>
@@ -244,7 +243,7 @@
 
           <article class="product" data-id="dong" data-coffee="Đông (Winter)" data-arabica="0">
             <figure class="season">
-              <img src="../img/season-dong.webp" srcset="../img/season-dong.webp 640w, ../img/season-dong-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Đông (Winter) pure-roast Vietnamese coffee bag with snowy mountains">
+              <img src="../img/season-dong.webp" srcset="../img/season-dong-320.webp 320w, ../img/season-dong.webp 640w, ../img/season-dong-960.webp 960w, ../img/season-dong-1180.webp 1180w" sizes="(min-width: 1100px) 25vw, (min-width: 641px) 50vw, 100vw" width="640" height="446" loading="lazy" decoding="async" alt="Calm Coffee Supply Đông (Winter) pure-roast Vietnamese coffee bag with snowy mountains">
               <figcaption>Dark roast</figcaption>
             </figure>
             <h3><a href="coffee/dong/">Đông · Winter</a></h3>
@@ -357,7 +356,7 @@
       <div class="wrap narrow center">
         <h2>Hear about new roasts</h2>
         <p>Sign up to hear when a fresh roast is ready, plus guides to brewing great coffee at home.</p>
-        <form class="signup" action="mailto:coffeearoundtheworld@gmail.com?subject=Newsletter%20sign-up" method="post" enctype="text/plain">
+        <form class="signup">
           <label for="email" class="sr-only">Email address</label>
           <input id="email" type="email" name="email" placeholder="you@email.com" required>
           <button class="btn" type="submit">Subscribe</button>
