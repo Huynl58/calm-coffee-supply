@@ -16,7 +16,7 @@
     // Web3Forms key with THIS address and put it in newsletterKey (a key always delivers to
     // the address it was created with). Until then, sign-ups open a pre-filled email to it.
     newsletterEmail: "coffeaaroundtheworld@gmail.com",
-    newsletterKey: "YOUR_NEWSLETTER_WEB3FORMS_KEY",
+    newsletterKey: "fce84666-bda6-4b10-8694-68fbe6156da5",
     phone: "0327193248",
 
     // Price of one 250g bag of 100% Arabica / 100% Robusta (VND).
