@@ -4,8 +4,8 @@
    uppercase tracked headings) in the packaging colors (burgundy on cream). */
 :root {
   /* Brand colors (from the packaging) */
-  --brand: #9b2a3a;        /* the one accent: buttons, links, icons */
-  --brand-dark: #7e1f2d;
+  --brand: #a82038;        /* the one accent: buttons, links, icons */
+  --brand-dark: #88182b;
   --wine: #3e1219;         /* announcement bar + process band */
   --cream: #f3ead8;
   --paper: #fbf7ee;        /* page background */
