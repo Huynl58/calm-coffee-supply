@@ -80,8 +80,10 @@
     done: "Xong", subject: "Đơn hàng mới", from: "Website Calm Coffee Supply",
     hello: "Xin chào Calm Coffee Supply, tôi muốn đặt hàng:",
     errPhone: "Vui lòng nhập số điện thoại hợp lệ.", required: (f) => `Vui lòng điền: ${f}.`,
-    nlSubject: "Đăng ký nhận tin", nlThanks: "Cảm ơn bạn! Chúng tôi sẽ báo khi có mẻ rang mới.",
-    nlMail: "Hãy bấm Gửi trong email vừa mở để hoàn tất đăng ký.",
+    nlSubject: "Đăng ký nhận tin", nlSending: "Đang gửi…",
+    nlOkTitle: "Đăng ký thành công!", nlOk: (e) => `Cảm ơn bạn! Chúng tôi sẽ gửi tin về mẻ rang mới đến ${e}.`,
+    nlFail: (m) => `Chưa gửi được, có thể do mạng chập chờn. Vui lòng thử lại, hoặc gửi email cho chúng tôi tại ${m}.`,
+    nlRetry: "Thử lại",
   } : {
     beans: "Beans", ratio: "Blend ratio", grind: "Grind",
     whole: "Whole bean", ground: "Ground", size: "Bag size", qty: "Quantity",
@@ -112,8 +114,10 @@
     done: "Done", subject: "New order", from: "Calm Coffee Supply website",
     hello: "Hello Calm Coffee Supply, I'd like to order:",
     errPhone: "Please enter a valid phone number.", required: (f) => `Please fill in: ${f}.`,
-    nlSubject: "Newsletter sign-up", nlThanks: "Thanks! We'll let you know when a fresh roast is ready.",
-    nlMail: "Press Send in the email that just opened to finish signing up.",
+    nlSubject: "Newsletter sign-up", nlSending: "Sending…",
+    nlOkTitle: "You're signed up!", nlOk: (e) => `Thank you! We'll send news about fresh roasts to ${e}.`,
+    nlFail: (m) => `We couldn't send that, maybe a connection hiccup. Please try again, or email us at ${m}.`,
+    nlRetry: "Try again",
   };
 
   const hasKey = !CONFIG.web3formsKey.startsWith("YOUR_");
@@ -130,11 +134,10 @@
   const clampQty = (v) => Math.min(CONFIG.maxQty, Math.max(1, parseInt(v, 10) || 1));
 
   async function send(fields, key = CONFIG.web3formsKey) {
-    const res = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ access_key: key, from_name: T.from, ...fields }),
-    });
+    // FormData (not JSON) keeps this a "simple" request, so the browser sends it without a CORS pre-check.
+    const body = new FormData();
+    Object.entries({ access_key: key, from_name: T.from, ...fields }).forEach(([k, v]) => { if (v != null) body.append(k, v); });
+    const res = await fetch("https://api.web3forms.com/submit", { method: "POST", headers: { Accept: "application/json" }, body });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || data.success === false) throw new Error(data.message || res.status);
   }
@@ -433,20 +436,38 @@
   document.querySelectorAll("form.signup").forEach((form) => {
     form.removeAttribute("onsubmit");
     form.onsubmit = null;
+    const btn = form.querySelector("button[type=submit], button:not([type])");
+    const btnText = btn.textContent;
+    const err = document.createElement("p");
+    err.className = "signup-msg signup-msg--error";
+    err.setAttribute("role", "alert");
+    err.hidden = true;
+    form.after(err);
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = form.querySelector("input[type=email]").value.trim();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      const nlKey = !CONFIG.newsletterKey.startsWith("YOUR_");
-      let viaMail = !nlKey;
-      if (nlKey) {
-        try { await send({ subject: `${T.nlSubject}: ${email}`, email, Newsletter: email }, CONFIG.newsletterKey); } catch { viaMail = true; }
+      const hasNlKey = !CONFIG.newsletterKey.startsWith("YOUR_");
+      if (!hasNlKey) { openMail(T.nlSubject, email, CONFIG.newsletterEmail); return; }
+
+      err.hidden = true;
+      btn.disabled = true; btn.textContent = T.nlSending;
+      try {
+        await send({ subject: `${T.nlSubject}: ${email}`, email, Newsletter: email }, CONFIG.newsletterKey);
+        const ok = document.createElement("div");
+        ok.className = "signup-msg signup-msg--ok";
+        ok.setAttribute("role", "status");
+        ok.tabIndex = -1;
+        ok.innerHTML = `<p class="signup-msg__title"><span aria-hidden="true">✓</span> ${esc(T.nlOkTitle)}</p><p>${esc(T.nlOk(email))}</p>`;
+        err.remove();
+        form.replaceWith(ok);
+        ok.focus({ preventScroll: true });
+      } catch {
+        btn.disabled = false; btn.textContent = T.nlRetry;
+        err.innerHTML = esc(T.nlFail("§")).replace("§", `<a href="mailto:${CONFIG.newsletterEmail}?subject=${encodeURIComponent(T.nlSubject)}&body=${encodeURIComponent(email)}">${CONFIG.newsletterEmail}</a>`);
+        err.hidden = false;
       }
-      if (viaMail) openMail(T.nlSubject, email, CONFIG.newsletterEmail);
-      const p = document.createElement("p");
-      p.setAttribute("role", "status");
-      p.textContent = viaMail ? T.nlMail : T.nlThanks;
-      form.replaceWith(p);
     });
   });
 })();

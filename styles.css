@@ -649,3 +649,13 @@ dialog.cart::backdrop { background: rgb(42 26 28 / .35); }
 .mini-roast { font-size: 12px; color: var(--muted); }
 .cta-box { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--border-strong); }
 .cta-box h2 { text-align: center; margin: 0 0 24px !important; }
+
+/* Newsletter result messages (shop.js) */
+.signup-msg { max-width: 480px; margin: 20px auto 0; font-size: 13px; }
+.signup-msg--ok { padding: 22px 24px; border: 1px solid var(--brand); background: var(--white); text-align: center; outline: none; }
+.signup-msg--ok p { margin: 0; color: var(--text); }
+.signup-msg__title { font-size: 12px; letter-spacing: var(--tracking); text-transform: uppercase; color: var(--brand) !important; margin-bottom: 8px !important; }
+.signup-msg__title span { display: inline-block; margin-right: 6px; }
+.signup-msg--error { color: #b3261e; text-align: center; }
+.signup-msg--error a { color: inherit; }
+.site-footer .signup-msg { margin-left: 0; text-align: left; }
