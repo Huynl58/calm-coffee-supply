@@ -6,11 +6,17 @@
      of both HTML files. */
 (() => {
   const CONFIG = {
-    // Where orders + newsletter sign-ups are delivered. Get a free key at https://web3forms.com
+    // Where orders are delivered. Get a free key at https://web3forms.com
     // (enter coffeearoundtheworld@gmail.com; the key arrives by email). Until it is set,
     // checkout falls back to opening a pre-filled email so no order is lost.
     web3formsKey: "YOUR_WEB3FORMS_ACCESS_KEY",
     email: "coffeearoundtheworld@gmail.com",
+
+    // Newsletter sign-ups go to their own inbox. For automatic delivery, create a second
+    // Web3Forms key with THIS address and put it in newsletterKey (a key always delivers to
+    // the address it was created with). Until then, sign-ups open a pre-filled email to it.
+    newsletterEmail: "coffeaaroundtheworld@gmail.com",
+    newsletterKey: "YOUR_NEWSLETTER_WEB3FORMS_KEY",
     phone: "0327193248",
 
     // Price of one 250g bag of 100% Arabica / 100% Robusta (VND).
@@ -123,17 +129,17 @@
   const beanLabel = (a) => a === 100 ? "100% Arabica" : a === 0 ? "100% Robusta" : `${a}% Arabica · ${100 - a}% Robusta`;
   const clampQty = (v) => Math.min(CONFIG.maxQty, Math.max(1, parseInt(v, 10) || 1));
 
-  async function send(fields) {
+  async function send(fields, key = CONFIG.web3formsKey) {
     const res = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ access_key: CONFIG.web3formsKey, from_name: T.from, ...fields }),
+      body: JSON.stringify({ access_key: key, from_name: T.from, ...fields }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || data.success === false) throw new Error(data.message || res.status);
   }
-  const openMail = (subject, body) => {
-    location.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const openMail = (subject, body, to = CONFIG.email) => {
+    location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   /* ---------- Cart state (remembered in this browser) ---------- */
@@ -431,11 +437,12 @@
       e.preventDefault();
       const email = form.querySelector("input[type=email]").value.trim();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      let viaMail = !hasKey;
-      if (hasKey) {
-        try { await send({ subject: `${T.nlSubject}: ${email}`, email, Newsletter: email }); } catch { viaMail = true; }
+      const nlKey = !CONFIG.newsletterKey.startsWith("YOUR_");
+      let viaMail = !nlKey;
+      if (nlKey) {
+        try { await send({ subject: `${T.nlSubject}: ${email}`, email, Newsletter: email }, CONFIG.newsletterKey); } catch { viaMail = true; }
       }
-      if (viaMail) openMail(T.nlSubject, email);
+      if (viaMail) openMail(T.nlSubject, email, CONFIG.newsletterEmail);
       const p = document.createElement("p");
       p.setAttribute("role", "status");
       p.textContent = viaMail ? T.nlMail : T.nlThanks;
