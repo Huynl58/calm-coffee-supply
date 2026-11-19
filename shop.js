@@ -7,10 +7,10 @@
 (() => {
   const CONFIG = {
     // Where orders are delivered. Get a free key at https://web3forms.com
-    // (enter coffeearoundtheworld@gmail.com; the key arrives by email). Until it is set,
+    // (enter coffeaaroundtheworld@gmail.com; the key arrives by email). Until it is set,
     // checkout falls back to opening a pre-filled email so no order is lost.
     web3formsKey: "YOUR_WEB3FORMS_ACCESS_KEY",
-    email: "coffeearoundtheworld@gmail.com",
+    email: "coffeaaroundtheworld@gmail.com",
 
     // Newsletter sign-ups go to their own inbox. For automatic delivery, create a second
     // Web3Forms key with THIS address and put it in newsletterKey (a key always delivers to
