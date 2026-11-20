@@ -5,5 +5,6 @@ PROJECT_NOTES.md
 design-system/
 tools/
 _test*.html
-# Original artwork PNGs (1.4–1.9 MB each); the site uses the WebP versions
+# Source PNGs from Figma (banner.png, image NN.png); the site uses banner*.jpg + bag-*.png
 img/*.png
+!img/bag-*.png
