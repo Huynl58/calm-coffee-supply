@@ -29,9 +29,10 @@
 
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
   <!-- Fonts are self-hosted: @font-face rules at the top of styles.css, files in fonts/ -->
-  <link rel="stylesheet" href="../../styles.css?v=20261120">
+  <link rel="stylesheet" href="../../styles.css?v=20261125">
   <script src="../../shop.js?v=20261120" defer></script>
-  <script src="../../menu.js?v=20261120" defer></script>
+  <script src="../../menu.js?v=20261125" defer></script>
+  <script src="../../sound.js?v=20261125" defer></script>
 
   <script type="application/ld+json">
 {
@@ -46,7 +47,7 @@
         "https://huynl58.github.io/calm-coffee-supply/og-image-en.jpg"
       ],
       "datePublished": "2026-11-19",
-      "dateModified": "2026-11-20",
+      "dateModified": "2026-11-25",
       "author": {
         "@type": "Organization",
         "name": "Calm Coffee Supply",
@@ -81,12 +82,10 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <p class="announcement">Free delivery on orders from 500,000₫ · Cam Ranh shop open 8:00–20:00 every day</p>
-
   <header class="site-header">
     <div class="wrap nav">
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
-        <span class="menu-toggle__bars" aria-hidden="true"></span><span class="menu-toggle__text">Menu</span>
+        <span class="menu-toggle__bars" aria-hidden="true"></span><span class="menu-toggle__text"><span>Menu</span><span aria-hidden="true">Close</span></span>
       </button>
       <a href="../" class="logo" aria-label="Calm Coffee Supply home">
         <svg viewBox="0 0 99 160" aria-hidden="true"><path d="M52.0505 35.999C50.4363 37.804 47.6066 37.804 45.9726 35.999L19.9075 6.85886C17.5361 4.21158 19.4093 0 22.9364 0H75.0667C78.6138 0 80.467 4.21158 78.0957 6.85886L52.0305 35.999H52.0505Z" fill="currentColor"/><path d="M67.8729 97.107C65.5813 105.45 58.0487 111.607 49.0216 111.607C38.181 111.607 29.4129 102.763 29.4129 91.8727C29.4129 80.9827 38.2009 72.1384 49.0216 72.1384C58.6266 72.1384 66.5976 79.0975 68.2914 88.2627H97.8638C96.0105 62.7125 74.8874 42.537 49.0216 42.537C23.1557 42.537 0 64.6378 0 91.8727C0 119.108 21.9601 141.208 49.0216 141.208C74.3294 141.208 95.1138 121.875 97.7243 97.107H67.8729Z" fill="currentColor" fill-rule="evenodd"/><path d="M19.6 158.2H78.5" stroke="currentColor" stroke-width="3.5"/></svg>
@@ -94,13 +93,17 @@
       </a>
       <nav id="site-menu" aria-label="Main">
         <ul>
-          <li><a href="../#coffee">Our Coffee</a></li>
-          <li><a href="../how-to-brew-phin-coffee/">Phin Guide</a></li>
-          <li><a href="../about/">About</a></li>
-          <li><a href="../#process">Process</a></li>
-          <li><a href="../#faq">FAQ</a></li>
-          <li><a href="../#contact">Contact</a></li>
+          <li><a href="../#coffee"><span>Our Coffee</span></a></li>
+          <li><a href="../how-to-brew-phin-coffee/"><span>Phin Guide</span></a></li>
+          <li><a href="../about/"><span>About</span></a></li>
+          <li><a href="../#process"><span>Process</span></a></li>
+          <li><a href="../#faq"><span>FAQ</span></a></li>
+          <li><a href="../#contact"><span>Contact</span></a></li>
         </ul>
+        <dl class="menu-info">
+          <div><dt>Opening hours</dt><dd>8:00–20:00 every day</dd></div>
+          <div><dt>Phone</dt><dd><a href="tel:+84327193248">+84 327 193 248</a></dd></div>
+        </dl>
       </nav>
       <div class="nav-end">
         <a href="../../cach-pha-ca-phe-phin/" class="lang" hreflang="vi" lang="vi">VI<span class="sr-only"> (Tiếng Việt)</span></a>

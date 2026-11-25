@@ -31,10 +31,17 @@
 
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <!-- Fonts are self-hosted: @font-face rules at the top of styles.css, files in fonts/ -->
-  <link rel="preload" as="image" href="img/banner.jpg" imagesrcset="img/banner-640.jpg 640w, img/banner.jpg 1280w" imagesizes="(min-width: 1360px) 1280px, 100vw" fetchpriority="high">
-  <link rel="stylesheet" href="styles.css?v=20261120">
+  <link rel="preload" as="image" href="img/roastery-poster-720.jpg" imagesrcset="img/roastery-poster-720.jpg 720w, img/roastery-poster.webp 1430w" imagesizes="(min-width: 960px) 60vw, 100vw" fetchpriority="high">
+  <link rel="stylesheet" href="styles.css?v=20261125">
+  <!-- Loading screen (loader.js): shown once per visit, decided before first paint so there's no flash -->
+  <script>try{if(!sessionStorage.getItem("ccs-loaded"))document.documentElement.classList.add("is-loading")}catch(e){}</script>
+  <script src="loader.js?v=20261125" defer></script>
   <script src="shop.js?v=20261120" defer></script>
-  <script src="menu.js?v=20261120" defer></script>
+  <script src="menu.js?v=20261125" defer></script>
+  <script src="sound.js?v=20261125" defer></script>
+  <!-- 3D hero (hero3d.js): three.js comes from the CDN only on wide screens; addons import "three" through this map -->
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
+  <script type="module" src="hero3d.js?v=20261125"></script>
 
   <!-- ===== SEO: structured data (helps Google show rich results) =====
        Keep in sync with the visible products/FAQ below AND with en/index.html. -->
@@ -126,14 +133,40 @@
   </script>
 </head>
 <body>
+  <div class="loader" aria-hidden="true">
+    <div class="loader__mark">
+      <svg class="loader__logo" viewBox="-3 -3 105 166">
+        <path class="loader__tri" pathLength="1" d="M52.0505 35.999C50.4363 37.804 47.6066 37.804 45.9726 35.999L19.9075 6.85886C17.5361 4.21158 19.4093 0 22.9364 0H75.0667C78.6138 0 80.467 4.21158 78.0957 6.85886L52.0305 35.999H52.0505Z"/>
+        <path class="loader__c" pathLength="1" fill-rule="evenodd" d="M67.8729 97.107C65.5813 105.45 58.0487 111.607 49.0216 111.607C38.181 111.607 29.4129 102.763 29.4129 91.8727C29.4129 80.9827 38.2009 72.1384 49.0216 72.1384C58.6266 72.1384 66.5976 79.0975 68.2914 88.2627H97.8638C96.0105 62.7125 74.8874 42.537 49.0216 42.537C23.1557 42.537 0 64.6378 0 91.8727C0 119.108 21.9601 141.208 49.0216 141.208C74.3294 141.208 95.1138 121.875 97.7243 97.107H67.8729Z"/>
+        <path class="loader__line" pathLength="1" d="M19.6 158.2H78.5"/>
+      </svg>
+      <p class="loader__word"><span>Calm Coffee Supply</span></p>
+    </div>
+    <div class="loader__foot">
+      <svg class="loader__cup" viewBox="0 0 80 100">
+        <defs>
+          <clipPath id="loader-cup-in"><path d="M14 46H58L54 86Q53.4 92 47.5 92H24.5Q18.6 92 18 86Z"/></clipPath>
+          <linearGradient id="loader-stream" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="34">
+            <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/>
+          </linearGradient>
+        </defs>
+        <g class="loader__steam"><path d="M28 40c-3-4 3-7 0-11s3-7 0-11"/><path d="M36 38c-3-4 3-7 0-11s3-7 0-11"/><path d="M44 40c-3-4 3-7 0-11s3-7 0-11"/></g>
+        <line class="loader__stream" x1="36" y1="0" x2="36" y2="92"/>
+        <g clip-path="url(#loader-cup-in)">
+          <g class="loader__liquid" transform="translate(0 92)"><path class="loader__wave" d="M-40 0Q-30-3-20 0T0 0T20 0T40 0T60 0T80 0T100 0V60H-40Z"/></g>
+        </g>
+        <path class="loader__cupline" d="M14 46H58L54 86Q53.4 92 47.5 92H24.5Q18.6 92 18 86Z"/>
+        <path class="loader__cupline" d="M57 56Q68 55 67.5 64Q67 74 54.5 76"/>
+      </svg>
+      <span class="loader__pct">0</span>
+    </div>
+  </div>
   <a class="skip" href="#main">Bỏ qua, đến nội dung chính</a>
-
-  <p class="announcement">Miễn phí giao hàng cho đơn từ 500.000₫ · Cửa hàng Cam Ranh mở cửa 8:00–20:00 mỗi ngày</p>
 
   <header class="site-header">
     <div class="wrap nav">
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
-        <span class="menu-toggle__bars" aria-hidden="true"></span><span class="menu-toggle__text">Menu</span>
+        <span class="menu-toggle__bars" aria-hidden="true"></span><span class="menu-toggle__text"><span>Menu</span><span aria-hidden="true">Đóng</span></span>
       </button>
       <a href="./" class="logo" aria-label="Calm Coffee Supply — trang chủ">
         <svg viewBox="0 0 99 160" aria-hidden="true"><path d="M52.0505 35.999C50.4363 37.804 47.6066 37.804 45.9726 35.999L19.9075 6.85886C17.5361 4.21158 19.4093 0 22.9364 0H75.0667C78.6138 0 80.467 4.21158 78.0957 6.85886L52.0305 35.999H52.0505Z" fill="currentColor"/><path d="M67.8729 97.107C65.5813 105.45 58.0487 111.607 49.0216 111.607C38.181 111.607 29.4129 102.763 29.4129 91.8727C29.4129 80.9827 38.2009 72.1384 49.0216 72.1384C58.6266 72.1384 66.5976 79.0975 68.2914 88.2627H97.8638C96.0105 62.7125 74.8874 42.537 49.0216 42.537C23.1557 42.537 0 64.6378 0 91.8727C0 119.108 21.9601 141.208 49.0216 141.208C74.3294 141.208 95.1138 121.875 97.7243 97.107H67.8729Z" fill="currentColor" fill-rule="evenodd"/><path d="M19.6 158.2H78.5" stroke="currentColor" stroke-width="3.5"/></svg>
@@ -141,13 +174,17 @@
       </a>
       <nav id="site-menu" aria-label="Menu chính">
         <ul>
-          <li><a href="#coffee">Cà phê</a></li>
-          <li><a href="cach-pha-ca-phe-phin/">Cách pha phin</a></li>
-          <li><a href="ve-chung-toi/">Về chúng tôi</a></li>
-          <li><a href="#process">Quy trình</a></li>
-          <li><a href="#faq">Hỏi đáp</a></li>
-          <li><a href="#contact">Liên hệ</a></li>
+          <li><a href="#coffee"><span>Cà phê</span></a></li>
+          <li><a href="cach-pha-ca-phe-phin/"><span>Cách pha phin</span></a></li>
+          <li><a href="ve-chung-toi/"><span>Về chúng tôi</span></a></li>
+          <li><a href="#process"><span>Quy trình</span></a></li>
+          <li><a href="#faq"><span>Hỏi đáp</span></a></li>
+          <li><a href="#contact"><span>Liên hệ</span></a></li>
         </ul>
+        <dl class="menu-info">
+          <div><dt>Giờ mở cửa</dt><dd>8:00–20:00 mỗi ngày</dd></div>
+          <div><dt>Điện thoại</dt><dd><a href="tel:+84327193248">0327 193 248</a></dd></div>
+        </dl>
       </nav>
       <div class="nav-end">
         <a href="en/" class="lang" hreflang="en" lang="en">EN<span class="sr-only"> (English version)</span></a>
@@ -157,27 +194,58 @@
   </header>
 
   <main id="main">
-    <!-- HERO: the H1 carries the main keyword -->
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Rang mộc · Nguyên chất · Tây Nguyên</p>
-          <h1>Cà phê rang mộc nguyên chất từ Tây Nguyên</h1>
-          <p class="lead">Ly cà phê ngon nhất bắt đầu từ những hạt cà phê được chọn lựa cẩn thận. Chúng tôi làm việc cùng những nhà sản xuất lành nghề để mang đến cho bạn hương vị nguyên bản của cà phê Tây Nguyên: cà phê rang xay nguyên chất, không tẩm bơ hay hương liệu, ngon khi pha phin hay pha máy. Ghé cửa hàng của chúng tôi tại Cam Ranh, Khánh Hòa, hoặc đặt hàng giao tận nơi.</p>
-          <div class="cta-row">
-            <a href="#coffee" class="btn">Xem các loại cà phê</a>
-            <a href="#process" class="btn btn-ghost">Cách chúng tôi rang</a>
-          </div>
-          <ul class="trust">
-            <li><strong>Rang mộc</strong> không tẩm bơ, hương liệu</li>
-            <li><strong>Tây Nguyên</strong> nguồn gốc rõ ràng</li>
-            <li><strong>Arabica &amp; Robusta</strong> tự chọn tỉ lệ phối trộn</li>
-          </ul>
-        </div>
-
+    <!-- HERO: the H1 carries the main keyword.
+         Wide screens: a scroll story over the 3D roastery (hero3d.js + .hero.is-story in styles.css).
+         Phones / reduced motion: the poster image, then the copy. -->
+    <section class="hero" data-hero3d="3d/roastery.glb" aria-label="Tham quan xưởng rang">
+      <div class="hero-stage">
         <figure class="hero-art">
-          <img src="img/banner.jpg" srcset="img/banner-640.jpg 640w, img/banner.jpg 1280w" sizes="(min-width: 1360px) 1280px, 100vw" width="1280" height="680" fetchpriority="high" decoding="async" alt="Túi cà phê rang mộc Calm Coffee Supply màu đỏ bên hộp quà và tách cà phê đen">
+          <img class="hero-poster" src="img/roastery-poster-720.jpg" srcset="img/roastery-poster-720.jpg 720w, img/roastery-poster.webp 1430w" sizes="(min-width: 960px) 60vw, 100vw" width="1430" height="1476" fetchpriority="high" decoding="async" alt="Mô hình 3D xưởng rang Calm Coffee Supply: lồng rang đỏ, khay làm nguội, quầy pha cà phê và ống khói đang toả khói">
+          <canvas class="hero-canvas" aria-hidden="true"></canvas>
         </figure>
+        <div class="wrap hero-grid">
+          <div class="hero-copy" data-step="0">
+            <p class="eyebrow">Rang mộc · Nguyên chất · Tây Nguyên</p>
+            <h1>Cà phê rang mộc nguyên chất từ Tây Nguyên</h1>
+            <p class="lead">Ly cà phê ngon nhất bắt đầu từ những hạt cà phê được chọn lựa cẩn thận. Chúng tôi làm việc cùng những nhà sản xuất lành nghề để mang đến cho bạn hương vị nguyên bản của cà phê Tây Nguyên: cà phê rang xay nguyên chất, không tẩm bơ hay hương liệu, ngon khi pha phin hay pha máy. Ghé cửa hàng của chúng tôi tại Cam Ranh, Khánh Hòa, hoặc đặt hàng giao tận nơi.</p>
+            <div class="cta-row">
+              <a href="#coffee" class="btn">Xem các loại cà phê</a>
+              <a href="#process" class="btn btn-ghost">Cách chúng tôi rang</a>
+            </div>
+            <ul class="trust">
+              <li><strong>Rang mộc</strong> không tẩm bơ, hương liệu</li>
+              <li><strong>Tây Nguyên</strong> nguồn gốc rõ ràng</li>
+              <li><strong>Arabica &amp; Robusta</strong> tự chọn tỉ lệ phối trộn</li>
+            </ul>
+          </div>
+          <ol class="hero-steps">
+            <li class="hero-step" data-step="1" data-side="left">
+              <p class="eyebrow"><span>02</span> Rang mộc</p>
+              <p class="hero-step-title" data-scramble>Lồng rang quay chậm</p>
+              <p>Chúng tôi tự rang từng mẻ tại Cam Ranh: nguyên chất, không bơ, không đường, không hương liệu.</p>
+            </li>
+            <li class="hero-step" data-step="2" data-side="bottom">
+              <p class="eyebrow"><span>03</span> Làm nguội</p>
+              <p class="hero-step-title" data-scramble>Đảo nguội ngay khi ra lò</p>
+              <p>Hạt vừa rang được đảo đều trên khay làm nguội để giữ trọn hương vị nguyên bản.</p>
+            </li>
+            <li class="hero-step" data-step="3" data-side="right">
+              <p class="eyebrow"><span>04</span> Pha</p>
+              <p class="hero-step-title" data-scramble>Pha phin hay pha máy</p>
+              <p>Ngon khi pha phin truyền thống lẫn espresso. Ngày rang được ghi trên từng túi.</p>
+            </li>
+            <li class="hero-step" data-step="4" data-side="left">
+              <p class="eyebrow"><span>05</span> Ghé thăm</p>
+              <p class="hero-step-title" data-scramble>25 Điện Biên Phủ, Cam Ranh</p>
+              <p>Mở cửa 8:00–20:00 mỗi ngày.</p>
+              <a href="#contact" class="btn btn-ghost btn-sm">Liên hệ cửa hàng</a>
+            </li>
+          </ol>
+          <div class="hero-hud" aria-hidden="true">
+            <span class="hero-hud-num">01</span><span class="hero-hud-track"><span class="hero-hud-bar"></span></span><span>05</span>
+            <span class="hero-hud-hint">Cuộn để tham quan xưởng</span>
+          </div>
+        </div>
       </div>
     </section>
 

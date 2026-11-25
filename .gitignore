@@ -8,3 +8,6 @@ _test*.html
 # Source PNGs from Figma (banner.png, image NN.png); the site uses banner*.jpg + bag-*.png
 img/*.png
 !img/bag-*.png
+
+# 3D hero source project (React/Vite); the site uses 3d/roastery.glb + hero3d.js
+3D model/

@@ -31,10 +31,17 @@
 
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <!-- Fonts are self-hosted: @font-face rules at the top of styles.css, files in fonts/ -->
-  <link rel="preload" as="image" href="../img/banner.jpg" imagesrcset="../img/banner-640.jpg 640w, ../img/banner.jpg 1280w" imagesizes="(min-width: 1360px) 1280px, 100vw" fetchpriority="high">
-  <link rel="stylesheet" href="../styles.css?v=20261120">
+  <link rel="preload" as="image" href="../img/roastery-poster-720.jpg" imagesrcset="../img/roastery-poster-720.jpg 720w, ../img/roastery-poster.webp 1430w" imagesizes="(min-width: 960px) 60vw, 100vw" fetchpriority="high">
+  <link rel="stylesheet" href="../styles.css?v=20261125">
+  <!-- Loading screen (loader.js): shown once per visit, decided before first paint so there's no flash -->
+  <script>try{if(!sessionStorage.getItem("ccs-loaded"))document.documentElement.classList.add("is-loading")}catch(e){}</script>
+  <script src="../loader.js?v=20261125" defer></script>
   <script src="../shop.js?v=20261120" defer></script>
-  <script src="../menu.js?v=20261120" defer></script>
+  <script src="../menu.js?v=20261125" defer></script>
+  <script src="../sound.js?v=20261125" defer></script>
+  <!-- 3D hero (hero3d.js): three.js comes from the CDN only on wide screens; addons import "three" through this map -->
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
+  <script type="module" src="../hero3d.js?v=20261125"></script>
 
   <!-- ===== SEO: structured data =====
        Keep in sync with the visible products/FAQ below AND with ../index.html. -->
@@ -126,14 +133,40 @@
   </script>
 </head>
 <body>
+  <div class="loader" aria-hidden="true">
+    <div class="loader__mark">
+      <svg class="loader__logo" viewBox="-3 -3 105 166">
+        <path class="loader__tri" pathLength="1" d="M52.0505 35.999C50.4363 37.804 47.6066 37.804 45.9726 35.999L19.9075 6.85886C17.5361 4.21158 19.4093 0 22.9364 0H75.0667C78.6138 0 80.467 4.21158 78.0957 6.85886L52.0305 35.999H52.0505Z"/>
+        <path class="loader__c" pathLength="1" fill-rule="evenodd" d="M67.8729 97.107C65.5813 105.45 58.0487 111.607 49.0216 111.607C38.181 111.607 29.4129 102.763 29.4129 91.8727C29.4129 80.9827 38.2009 72.1384 49.0216 72.1384C58.6266 72.1384 66.5976 79.0975 68.2914 88.2627H97.8638C96.0105 62.7125 74.8874 42.537 49.0216 42.537C23.1557 42.537 0 64.6378 0 91.8727C0 119.108 21.9601 141.208 49.0216 141.208C74.3294 141.208 95.1138 121.875 97.7243 97.107H67.8729Z"/>
+        <path class="loader__line" pathLength="1" d="M19.6 158.2H78.5"/>
+      </svg>
+      <p class="loader__word"><span>Calm Coffee Supply</span></p>
+    </div>
+    <div class="loader__foot">
+      <svg class="loader__cup" viewBox="0 0 80 100">
+        <defs>
+          <clipPath id="loader-cup-in"><path d="M14 46H58L54 86Q53.4 92 47.5 92H24.5Q18.6 92 18 86Z"/></clipPath>
+          <linearGradient id="loader-stream" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="34">
+            <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/>
+          </linearGradient>
+        </defs>
+        <g class="loader__steam"><path d="M28 40c-3-4 3-7 0-11s3-7 0-11"/><path d="M36 38c-3-4 3-7 0-11s3-7 0-11"/><path d="M44 40c-3-4 3-7 0-11s3-7 0-11"/></g>
+        <line class="loader__stream" x1="36" y1="0" x2="36" y2="92"/>
+        <g clip-path="url(#loader-cup-in)">
+          <g class="loader__liquid" transform="translate(0 92)"><path class="loader__wave" d="M-40 0Q-30-3-20 0T0 0T20 0T40 0T60 0T80 0T100 0V60H-40Z"/></g>
+        </g>
+        <path class="loader__cupline" d="M14 46H58L54 86Q53.4 92 47.5 92H24.5Q18.6 92 18 86Z"/>
+        <path class="loader__cupline" d="M57 56Q68 55 67.5 64Q67 74 54.5 76"/>
+      </svg>
+      <span class="loader__pct">0</span>
+    </div>
+  </div>
   <a class="skip" href="#main">Skip to content</a>
-
-  <p class="announcement">Free delivery on orders from 500,000₫ · Cam Ranh shop open 8:00–20:00 every day</p>
 
   <header class="site-header">
     <div class="wrap nav">
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
-        <span class="menu-toggle__bars" aria-hidden="true"></span><span class="menu-toggle__text">Menu</span>
+        <span class="menu-toggle__bars" aria-hidden="true"></span><span class="menu-toggle__text"><span>Menu</span><span aria-hidden="true">Close</span></span>
       </button>
       <a href="./" class="logo" aria-label="Calm Coffee Supply home">
         <svg viewBox="0 0 99 160" aria-hidden="true"><path d="M52.0505 35.999C50.4363 37.804 47.6066 37.804 45.9726 35.999L19.9075 6.85886C17.5361 4.21158 19.4093 0 22.9364 0H75.0667C78.6138 0 80.467 4.21158 78.0957 6.85886L52.0305 35.999H52.0505Z" fill="currentColor"/><path d="M67.8729 97.107C65.5813 105.45 58.0487 111.607 49.0216 111.607C38.181 111.607 29.4129 102.763 29.4129 91.8727C29.4129 80.9827 38.2009 72.1384 49.0216 72.1384C58.6266 72.1384 66.5976 79.0975 68.2914 88.2627H97.8638C96.0105 62.7125 74.8874 42.537 49.0216 42.537C23.1557 42.537 0 64.6378 0 91.8727C0 119.108 21.9601 141.208 49.0216 141.208C74.3294 141.208 95.1138 121.875 97.7243 97.107H67.8729Z" fill="currentColor" fill-rule="evenodd"/><path d="M19.6 158.2H78.5" stroke="currentColor" stroke-width="3.5"/></svg>
@@ -141,13 +174,17 @@
       </a>
       <nav id="site-menu" aria-label="Main">
         <ul>
-          <li><a href="#coffee">Our Coffee</a></li>
-          <li><a href="how-to-brew-phin-coffee/">Phin Guide</a></li>
-          <li><a href="about/">About</a></li>
-          <li><a href="#process">Process</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#coffee"><span>Our Coffee</span></a></li>
+          <li><a href="how-to-brew-phin-coffee/"><span>Phin Guide</span></a></li>
+          <li><a href="about/"><span>About</span></a></li>
+          <li><a href="#process"><span>Process</span></a></li>
+          <li><a href="#faq"><span>FAQ</span></a></li>
+          <li><a href="#contact"><span>Contact</span></a></li>
         </ul>
+        <dl class="menu-info">
+          <div><dt>Opening hours</dt><dd>8:00–20:00 every day</dd></div>
+          <div><dt>Phone</dt><dd><a href="tel:+84327193248">+84 327 193 248</a></dd></div>
+        </dl>
       </nav>
       <div class="nav-end">
         <a href="../" class="lang" hreflang="vi" lang="vi">VI<span class="sr-only"> (Tiếng Việt)</span></a>
@@ -157,27 +194,58 @@
   </header>
 
   <main id="main">
-    <!-- HERO: the H1 carries the main keyword -->
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Pure roast · No additives · Central Highlands</p>
-          <h1>Pure-roast Vietnamese coffee from the Central Highlands</h1>
-          <p class="lead">The best cup starts with carefully chosen beans. We work with skilled producers to bring you the true flavor of Central Highlands coffee: pure Vietnamese coffee beans with no butter or flavorings, great in a phin filter or an espresso machine. Visit our shop in Cam Ranh, Khánh Hòa, or order for delivery.</p>
-          <div class="cta-row">
-            <a href="#coffee" class="btn">Shop the coffee</a>
-            <a href="#process" class="btn btn-ghost">How we roast</a>
-          </div>
-          <ul class="trust">
-            <li><strong>Pure roast</strong> no butter or flavorings</li>
-            <li><strong>Tây Nguyên</strong> traceable origin</li>
-            <li><strong>Arabica &amp; Robusta</strong> blended to your ratio</li>
-          </ul>
-        </div>
-
+    <!-- HERO: the H1 carries the main keyword.
+         Wide screens: a scroll story over the 3D roastery (hero3d.js + .hero.is-story in styles.css).
+         Phones / reduced motion: the poster image, then the copy. -->
+    <section class="hero" data-hero3d="../3d/roastery.glb" aria-label="Tour of the roastery">
+      <div class="hero-stage">
         <figure class="hero-art">
-          <img src="../img/banner.jpg" srcset="../img/banner-640.jpg 640w, ../img/banner.jpg 1280w" sizes="(min-width: 1360px) 1280px, 100vw" width="1280" height="680" fetchpriority="high" decoding="async" alt="A red bag of Calm Coffee Supply pure-roast coffee beside a gift box and a cup of black coffee">
+          <img class="hero-poster" src="../img/roastery-poster-720.jpg" srcset="../img/roastery-poster-720.jpg 720w, ../img/roastery-poster.webp 1430w" sizes="(min-width: 960px) 60vw, 100vw" width="1430" height="1476" fetchpriority="high" decoding="async" alt="3D model of the Calm Coffee Supply roastery: red roasting drum, cooling tray, espresso bar and a smoking chimney">
+          <canvas class="hero-canvas" aria-hidden="true"></canvas>
         </figure>
+        <div class="wrap hero-grid">
+          <div class="hero-copy" data-step="0">
+            <p class="eyebrow">Pure roast · No additives · Central Highlands</p>
+            <h1>Pure-roast Vietnamese coffee from the Central Highlands</h1>
+            <p class="lead">The best cup starts with carefully chosen beans. We work with skilled producers to bring you the true flavor of Central Highlands coffee: pure Vietnamese coffee beans with no butter or flavorings, great in a phin filter or an espresso machine. Visit our shop in Cam Ranh, Khánh Hòa, or order for delivery.</p>
+            <div class="cta-row">
+              <a href="#coffee" class="btn">Shop the coffee</a>
+              <a href="#process" class="btn btn-ghost">How we roast</a>
+            </div>
+            <ul class="trust">
+              <li><strong>Pure roast</strong> no butter or flavorings</li>
+              <li><strong>Tây Nguyên</strong> traceable origin</li>
+              <li><strong>Arabica &amp; Robusta</strong> blended to your ratio</li>
+            </ul>
+          </div>
+          <ol class="hero-steps">
+            <li class="hero-step" data-step="1" data-side="left">
+              <p class="eyebrow"><span>02</span> Pure roast</p>
+              <p class="hero-step-title" data-scramble>The drum turns slowly</p>
+              <p>We roast every batch ourselves in Cam Ranh, with no butter, sugar or flavorings.</p>
+            </li>
+            <li class="hero-step" data-step="2" data-side="bottom">
+              <p class="eyebrow"><span>03</span> Cooling</p>
+              <p class="hero-step-title" data-scramble>Stirred cool straight from the drum</p>
+              <p>Fresh beans turn on the cooling tray so they keep their true flavor.</p>
+            </li>
+            <li class="hero-step" data-step="3" data-side="right">
+              <p class="eyebrow"><span>04</span> Brew</p>
+              <p class="hero-step-title" data-scramble>Phin filter or espresso</p>
+              <p>Great either way. The roast date is written on every bag.</p>
+            </li>
+            <li class="hero-step" data-step="4" data-side="left">
+              <p class="eyebrow"><span>05</span> Visit</p>
+              <p class="hero-step-title" data-scramble>25 Điện Biên Phủ, Cam Ranh</p>
+              <p>Open 8:00–20:00 every day.</p>
+              <a href="#contact" class="btn btn-ghost btn-sm">Contact the shop</a>
+            </li>
+          </ol>
+          <div class="hero-hud" aria-hidden="true">
+            <span class="hero-hud-num">01</span><span class="hero-hud-track"><span class="hero-hud-bar"></span></span><span>05</span>
+            <span class="hero-hud-hint">Scroll to tour the roastery</span>
+          </div>
+        </div>
       </div>
     </section>
 
