@@ -5,7 +5,7 @@
  * then the screen wipes up to reveal the page.
  * - Shown once per visit: the inline script in <head> adds html.is-loading unless
  *   sessionStorage has "ccs-loaded". No JavaScript → no loader.
- * - Progress: fonts (30) + page images loaded (30) + the 3D roastery (40) on wide screens,
+ * - Progress: fonts (30) + page images loaded (30) + the 3D roastery (40) when the scroll story runs,
  *   where hero3d.js fires "hero3d:ready" or "hero3d:error". Elsewhere the 3D share is free.
  * - Stays at least MIN_MS so the logo animation can play, at most MAX_MS whatever happens.
  * - hero3d.js holds its build-up intro until html.is-loading is gone.
@@ -20,7 +20,7 @@
 
   const MIN_MS = 2300
   const MAX_MS = 9000
-  const STORY_QUERY = '(min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)'
+  const STORY_QUERY = '(min-height: 500px) and (prefers-reduced-motion: no-preference)' // same as hero3d.js
   const pctEl = loader.querySelector('.loader__pct')
   const liquid = loader.querySelector('.loader__liquid')
   const stream = loader.querySelector('.loader__stream')

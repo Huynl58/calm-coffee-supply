@@ -29,10 +29,12 @@
 
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
   <!-- Fonts are self-hosted: @font-face rules at the top of styles.css, files in fonts/ -->
-  <link rel="stylesheet" href="../../styles.css?v=20261125">
+  <link rel="stylesheet" href="../../styles.css?v=2026112502">
+  <!-- Theme: apply the saved light/dark choice before first paint (menu.js handles the switch) -->
+  <script>try{var t=localStorage.getItem("ccs-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
   <script src="../../shop.js?v=20261120" defer></script>
-  <script src="../../menu.js?v=20261125" defer></script>
-  <script src="../../sound.js?v=20261125" defer></script>
+  <script src="../../menu.js?v=2026112502" defer></script>
+  <script src="../../sound.js?v=2026112502" defer></script>
 
   <script type="application/ld+json">
 {
@@ -100,14 +102,23 @@
           <li><a href="../#faq"><span>FAQ</span></a></li>
           <li><a href="../#contact"><span>Contact</span></a></li>
         </ul>
+        <div class="menu-lang menu-theme" role="group" aria-label="Theme · Giao diện">
+          <p class="menu-lang__title">Theme · Giao diện</p>
+          <div class="menu-lang__opts"><button type="button" class="menu-lang__opt" data-theme-set="light" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Light</button><button type="button" class="menu-lang__opt" data-theme-set="dark" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Dark</button></div>
+        </div>
+        <div class="menu-lang" role="group" aria-label="Language · Ngôn ngữ">
+          <p class="menu-lang__title">Language · Ngôn ngữ</p>
+          <div class="menu-lang__opts"><a class="menu-lang__opt" href="../../cach-pha-ca-phe-phin/" hreflang="vi" lang="vi"><b>VI</b> Tiếng Việt</a><span class="menu-lang__opt" aria-current="true"><b>EN</b> English</span></div>
+        </div>
         <dl class="menu-info">
           <div><dt>Opening hours</dt><dd>8:00–20:00 every day</dd></div>
           <div><dt>Phone</dt><dd><a href="tel:+84327193248">+84 327 193 248</a></dd></div>
         </dl>
       </nav>
       <div class="nav-end">
+        <button class="theme-toggle" type="button" aria-label="Dark theme"><svg class="theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><svg class="theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
         <a href="../../cach-pha-ca-phe-phin/" class="lang" hreflang="vi" lang="vi">VI<span class="sr-only"> (Tiếng Việt)</span></a>
-        <a href="../#coffee" class="btn btn-sm">Shop</a>
+        <a href="../#coffee" class="btn btn-sm nav-shop" aria-label="Shop"><svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 12.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9L5 8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Shop</span></a>
       </div>
     </div>
   </header>

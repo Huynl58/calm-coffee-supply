@@ -1,19 +1,23 @@
 /* Homepage hero: scroll story over a 3D roastery diorama (both languages).
  *
- * - Story mode (wide screens, motion allowed; same query as the CSS in styles.css):
+ * - Story mode (any screen at least 500px tall, motion allowed; same query as the CSS in styles.css):
  *   the hero is a tall scroll track with a sticky stage. Scrolling moves through 5 stops
  *   (overview + headline → roaster drum → cooling tray → espresso bar → the shop) and
  *   swaps the captions. This part works without WebGL; the poster image stays behind it.
- * - three.js is fetched from the CDN only in story mode, once the browser is idle.
+ *   Wide screens (WIDE_QUERY): model beside the text, travelling right → centre → left (STOPS).
+ *   Phones/tablets: model centred above the text at the bottom (STOPS_COMPACT), lighter pixel ratio.
+ * - three.js is fetched from the CDN once the browser is idle (not with Data Saver or ≤2 GB memory).
  *   When the model is ready the canvas fades in over the poster and the roastery
  *   "builds" itself from the ground up, then the camera follows the scroll.
- * - Phones, short screens, prefers-reduced-motion: nothing here runs; the poster is the hero.
+ * - Short screens (<500px tall) and prefers-reduced-motion: nothing here runs; the poster is the hero.
  *
  * Model: 3d/roastery.glb (Draco). Node names used: Drum, CoolingArm, Chimney (+ every other
  * top-level node drops in during the intro). Swap the file and adjust STOPS if the layout changes.
  */
 
-const STORY_QUERY = '(min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)'
+const STORY_QUERY = '(min-height: 500px) and (prefers-reduced-motion: no-preference)'
+/** Wide layout: model beside the text. Otherwise compact: model centred above the text (phones, tablets). */
+const WIDE_QUERY = '(min-width: 1024px) and (min-height: 640px)'
 const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.170.0/'
 
 /* Camera stops, in model units. f = point to frame, yaw/pitch in degrees (45 / 35.26 = true isometric),
@@ -24,6 +28,15 @@ const STOPS = [
   { f: [-0.9, 1.0, -1.5],  yaw: 52, pitch: 55,    zoom: 1.9,  sx: 0.50, sy: 0.40 }, // 3 cooling tray: centre, caption bottom
   { f: [1.55, 1.45, -0.3], yaw: 72, pitch: 24,    zoom: 2.1,  sx: 0.32, sy: 0.50 }, // 4 espresso bar: left, caption right
   { f: [0, 3.2, 0],        yaw: 45, pitch: 35.26, zoom: 0.92, sx: 0.70, sy: 0.49 }, // 5 the shop: back to the first position, caption left
+]
+/* Compact layout (phones, tablets): the model stays centred in the upper part of the screen,
+   drifting a little left/right between stops; captions sit underneath. */
+const STOPS_COMPACT = [
+  { f: [0, 3.2, 0],        yaw: 45, pitch: 35.26, zoom: 0.95, sx: 0.50, sy: 0.30 },
+  { f: [-2.5, 1.9, -2.6],  yaw: 32, pitch: 26,    zoom: 1.9,  sx: 0.54, sy: 0.30 },
+  { f: [-0.9, 1.0, -1.5],  yaw: 52, pitch: 55,    zoom: 1.8,  sx: 0.50, sy: 0.28 },
+  { f: [1.55, 1.45, -0.3], yaw: 72, pitch: 24,    zoom: 1.9,  sx: 0.46, sy: 0.30 },
+  { f: [0, 3.2, 0],        yaw: 45, pitch: 35.26, zoom: 0.95, sx: 0.50, sy: 0.30 },
 ]
 
 const hero = document.querySelector('[data-hero3d]')
@@ -127,6 +140,12 @@ function createStory(hero) {
       loop()
       if (!started) {
         started = true
+        // Data Saver or a low-memory phone: keep the poster (the story and captions still run).
+        const lite = navigator.connection?.saveData || (navigator.deviceMemory && navigator.deviceMemory <= 2)
+        if (lite) {
+          dispatchEvent(new Event('hero3d:error'))
+          return
+        }
         whenIdle(() =>
           load3d(hero, stage)
             .then((s) => {
@@ -189,7 +208,8 @@ async function load3d(hero, stage) {
   ])
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' })
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
+  const wideMq = matchMedia(WIDE_QUERY)
+  renderer.setPixelRatio(Math.min(devicePixelRatio, wideMq.matches ? 2 : 1.5)) // phones: lighter
   renderer.setClearColor(0x000000, 0)
 
   const scene = new THREE.Scene()
@@ -218,27 +238,93 @@ async function load3d(hero, stage) {
     if (!o.isMesh) return
     for (const m of [].concat(o.material)) materials.add(m)
   })
+  // --- Night (dark theme): the diorama dims to moonlight, its light sources glow, and a few fake point
+  // lights throw warm/cool pools onto the surfaces around them. uNight eases 0 ↔ 1 on theme change.
+  const night = { value: isDark() ? 1 : 0 }
+  let nightTarget = night.value
+  addEventListener('themechange', (e) => { nightTarget = e.detail === 'dark' ? 1 : 0 })
+  const glowSources = markGlow(THREE, model) // per-vertex aGlow: 1 = emitter keeps its colour, 2 = window glass → warm
+  const LIGHTS = [
+    // position (model units)         colour      radius strength
+    [[-0.8, 2.55, -0.6],  '#ffc276', 2.4, 1.15], // pendant lamp 1
+    [[-0.8, 2.55, 1.6],   '#ffc276', 2.4, 1.15], // pendant lamp 2
+    [[3.02, 3.1, -1.6],   '#ffd08a', 3.2, 1.2],  // street lamp
+    [[-1.0, 3.2, 0.0],    '#ff9f5e', 3.4, 0.55], // string lights across the café
+    [[-2.6, 0.45, -2.0],  '#ff6a2a', 1.5, 1.0],  // roaster burner (flickers)
+    [[-2.0, 1.9, -1.85],  '#58c6b0', 1.1, 0.55], // roaster control screen
+    [[1.53, 1.35, 0.65],  '#d6ecff', 1.2, 0.7],  // pastry case
+    [[1.15, 4.9, -2.0],   '#ffcf86', 1.8, 0.6],  // upstairs room, spilling out of the windows
+    // LED strip under the awning's front edge: washes the pavement, the bicycle and the shopfront
+    [[-3.1, 2.1, 2.8],    '#ffc983', 2.9, 1.15],
+    [[-1.4, 2.1, 2.8],    '#ffc983', 2.9, 1.15],
+    [[0.3, 2.1, 2.8],     '#ffc983', 2.9, 1.15],
+    [[-2.3, 1.1, 2.75],   '#ffd29a', 2.1, 1.35],  // warm pool on the pavement around the bicycle
+  ]
+  const lightPos = { value: LIGHTS.map((l) => new THREE.Vector3(...l[0])) }
+  const lightCol = { value: LIGHTS.map((l) => new THREE.Color(l[1]).multiplyScalar(l[3])) }
+  const lightRad = { value: LIGHTS.map((l) => l[2]) }
+  const baseStrength = LIGHTS.map((l) => l[3])
+  const NL = LIGHTS.length
+
   for (const m of materials) {
     m.metalness = 0
     m.roughness = 1
     m.side = THREE.DoubleSide // the cut shows insides; double-sided reads as solid while building
     m.onBeforeCompile = (sh) => {
-      sh.uniforms.uCut = build.cut
-      sh.uniforms.uBand = build.band
-      sh.uniforms.uGlow = build.glow
+      Object.assign(sh.uniforms, {
+        uCut: build.cut, uBand: build.band, uGlow: build.glow,
+        uNight: night, uLightPos: lightPos, uLightCol: lightCol, uLightRad: lightRad,
+      })
       sh.vertexShader = sh.vertexShader
-        .replace('#include <common>', '#include <common>\nvarying float vBuildY;')
-        .replace('#include <project_vertex>', '#include <project_vertex>\nvBuildY = (modelMatrix * vec4(transformed, 1.0)).y;')
+        .replace('#include <common>', '#include <common>\nattribute float aGlow;\nvarying float vGlow;\nvarying vec3 vWorld;')
+        .replace('#include <project_vertex>', '#include <project_vertex>\nvWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvGlow = aGlow;')
       sh.fragmentShader = sh.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying float vBuildY;\nuniform float uCut, uBand;\nuniform vec3 uGlow;')
-        .replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nif (vBuildY > uCut) discard;')
+        .replace('#include <common>', `#include <common>
+varying float vGlow;
+varying vec3 vWorld;
+uniform float uCut, uBand, uNight;
+uniform vec3 uGlow;
+uniform vec3 uLightPos[${NL}];
+uniform vec3 uLightCol[${NL}];
+uniform float uLightRad[${NL}];`)
+        .replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nif (vWorld.y > uCut) discard;')
         .replace(
           '#include <opaque_fragment>',
-          '#include <opaque_fragment>\ngl_FragColor.rgb = mix(gl_FragColor.rgb, uGlow, smoothstep(uCut - uBand, uCut, vBuildY) * 0.85);',
+          `#include <opaque_fragment>
+vec3 day = gl_FragColor.rgb;
+vec3 lit = vec3(0.17, 0.19, 0.33);                       // moonlight
+for (int i = 0; i < ${NL}; i++) {
+  float f = clamp(1.0 - distance(vWorld, uLightPos[i]) / uLightRad[i], 0.0, 1.0);
+  lit += uLightCol[i] * f * f;
+}
+vec3 nightCol = day * lit;
+if (vGlow > 1.5) nightCol = vec3(1.0, 0.78, 0.45) * 1.15;      // window glass lit from inside
+else if (vGlow > 0.5) nightCol = min(day * 1.35 + 0.08, vec3(1.0)); // bulbs, screens, LEDs
+gl_FragColor.rgb = mix(day, nightCol, uNight);
+gl_FragColor.rgb = mix(gl_FragColor.rgb, uGlow, smoothstep(uCut - uBand, uCut, vWorld.y) * 0.85);`,
         )
     }
     m.needsUpdate = true
   }
+
+  // LED strip along the underside of the awning's front edge (front pavement, where the bicycle is).
+  // By day a pale bar; at night it glows warm (with halos and the three lights above).
+  const STRIP = { x0: -3.85, x1: 1.15, y: 2.785, z: 2.93 }
+  const stripDay = new THREE.Color('#d9cfbd')
+  const stripNight = new THREE.Color(1.0, 0.86, 0.62)
+  const strip = new THREE.Mesh(
+    new THREE.BoxGeometry(STRIP.x1 - STRIP.x0, 0.035, 0.05),
+    new THREE.MeshBasicMaterial({ color: stripDay.clone() }),
+  )
+  strip.position.set((STRIP.x0 + STRIP.x1) / 2, STRIP.y, STRIP.z)
+  strip.visible = false // appears once the build-up has finished
+  scene.add(strip)
+  for (let x = STRIP.x0 + 0.2; x < STRIP.x1; x += 0.42)
+    glowSources.push({ pos: new THREE.Vector3(x, STRIP.y - 0.02, STRIP.z + 0.03), hex: '#ffcf8a' })
+
+  // Soft halos around the small emitters (bulbs, fairy lights, LEDs, street lamp, LED strip), visible at night.
+  const halos = makeHalos(THREE, glowSources)
+  scene.add(halos.points)
 
   // Moving parts pop in (scale from their pivot) once the cut line has passed them.
   const props = model.children
@@ -264,22 +350,26 @@ async function load3d(hero, stage) {
   }
 
   // --- Floating roast chaff around the diorama.
-  const chaff = makeChaff(THREE, { count: 70, box, color: '#8a5a3c' })
+  const chaff = makeChaff(THREE, { count: 70, box, color: '#8a5a3c', night: '#ffab5c' })
   scene.add(chaff.points)
 
   // --- Layout
   // The stage runs up under the clear header: frame the model in the area below it (sy is measured from there).
-  let W = 1, H = 1, top = 0, fitZoom = 1
+  let W = 1, H = 1, top = 0, fitZoom = 1, stops = STOPS
   const resize = () => {
     W = stage.clientWidth
     H = stage.clientHeight
     top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0
-    renderer.setSize(W, H, false)
     camera.left = -W / 2
     camera.right = W / 2
     camera.top = H / 2
     camera.bottom = -H / 2
-    fitZoom = Math.min((H - top) * 0.8, W * 0.54) / (radius * 1.55)
+    stops = wideMq.matches ? STOPS : STOPS_COMPACT
+    fitZoom = wideMq.matches
+      ? Math.min((H - top) * 0.8, W * 0.54) / (radius * 1.55)
+      : Math.min((H - top) * 0.5, W * 0.92) / (radius * 1.55)
+    renderer.setPixelRatio(Math.min(devicePixelRatio, wideMq.matches ? 2 : 1.5))
+    renderer.setSize(W, H, false)
   }
   new ResizeObserver(resize).observe(stage)
   resize()
@@ -300,8 +390,8 @@ async function load3d(hero, stage) {
   const deg = Math.PI / 180
 
   const placeCamera = (s) => {
-    const a = STOPS[Math.floor(s)]
-    const b = STOPS[Math.min(Math.floor(s) + 1, STOPS.length - 1)]
+    const a = stops[Math.floor(s)]
+    const b = stops[Math.min(Math.floor(s) + 1, stops.length - 1)]
     const t = smoothstep(0.12, 0.88, s - Math.floor(s)) // hold a moment at each stop
     const yaw = (lerp(a.yaw, b.yaw, t) + pointer.cx * 2.5) * deg
     const pitch = (lerp(a.pitch, b.pitch, t) - pointer.cy * 2) * deg
@@ -350,15 +440,23 @@ async function load3d(hero, stage) {
       p.node.visible = p.t > 0
     }
     if (smoke && build.cut.value > topY - 1) smoke.points.visible = true
+    if (built) strip.visible = true
 
     mixer?.update(dt)
+    night.value = damp(night.value, nightTarget, 2.2, dt)
+    if (Math.abs(night.value - nightTarget) < 0.002) night.value = nightTarget
+    strip.material.color.copy(stripDay).lerp(stripNight, night.value)
+    // the roaster burner flickers; the pendant lamps breathe very slightly
+    const fl = 0.75 + 0.25 * Math.sin(clock * 13.1) * Math.sin(clock * 7.3 + 1.7)
+    lightCol.value[4].set(LIGHTS[4][1]).multiplyScalar(baseStrength[4] * fl)
     if (drum) drum.rotation.x += dt * 0.6
     if (arm) arm.rotation.y += dt * 0.35
 
     placeCamera(s)
     const pxPerUnit = camera.zoom * renderer.getPixelRatio()
     if (smoke) smoke.update(dt, pxPerUnit)
-    chaff.update(dt, pxPerUnit, Math.min(clock / 2, 1))
+    chaff.update(dt, pxPerUnit, Math.min(clock / 2, 1), night.value)
+    halos.update(clock, pxPerUnit, night.value * (built ? 1 : 0))
     renderer.render(scene, camera)
   }
 
@@ -425,7 +523,7 @@ function makeSmoke(THREE, { count, width, height, color }) {
   }
 }
 
-function makeChaff(THREE, { count, box, color }) {
+function makeChaff(THREE, { count, box, color, night }) {
   const pos = new Float32Array(count * 3)
   const seed = new Float32Array(count)
   const pad = 1.5
@@ -453,6 +551,8 @@ function makeChaff(THREE, { count, box, color }) {
       uFade: { value: 0 },
       uRise: { value: box.max.y - box.min.y + pad },
       uColor: { value: new THREE.Color(color) },
+      uEmber: { value: new THREE.Color(night) },
+      uNight: { value: 0 },
     },
     vertexShader: `
       attribute float aSeed;
@@ -469,23 +569,139 @@ function makeChaff(THREE, { count, box, color }) {
         vAlpha = sin(fract(uTime * 0.1 + aSeed) * 3.14159);
       }`,
     fragmentShader: `
-      uniform vec3 uColor;
-      uniform float uFade;
+      uniform vec3 uColor, uEmber;
+      uniform float uFade, uNight;
       varying float vAlpha;
       void main() {
         float d = length(gl_PointCoord - 0.5) * 2.0;
         float a = (1.0 - smoothstep(0.4, 1.0, d)) * vAlpha * 0.55 * uFade;
-        gl_FragColor = vec4(uColor * a, a);
+        // night: the chaff turns into glowing embers (brighter colour, less coverage → reads as light)
+        vec3 c = mix(uColor, uEmber * 1.6, uNight);
+        gl_FragColor = vec4(c * a, a * (1.0 - 0.55 * uNight));
       }`,
   })
   const points = new THREE.Points(g, mat)
   points.frustumCulled = false
   return {
     points,
-    update(dt, pxPerUnit, fade) {
+    update(dt, pxPerUnit, fade, nightAmount = 0) {
       mat.uniforms.uTime.value += dt
       mat.uniforms.uScale.value = pxPerUnit
       mat.uniforms.uFade.value = fade
+      mat.uniforms.uNight.value = nightAmount
+    },
+  }
+}
+
+/* Is the page in the dark theme? (explicit choice, or the system setting when none was made) */
+function isDark() {
+  const t = document.documentElement.dataset.theme
+  return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+}
+
+/* The model's lighting is baked into vertex colours; parts that were "lit from within" in the bake
+   (windows, bulbs, screens, LEDs…) were written as their exact colour ×1.05. Find those vertices by colour
+   and tag them with an aGlow attribute: 2 = window glass (turns warm at night), 1 = any other emitter.
+   Also returns small-emitter clusters (bulbs, fairy lights, LEDs, lamps) for the halo sprites. */
+function markGlow(THREE, model) {
+  const EMITTERS = {
+    window: ['#a9cfd6'],
+    keep: ['#ffd99a', '#58c6b0', '#cfe3e6', '#efe6d6'],
+    halo: ['#ffcf7a', '#ff9f6b', '#fff1c4', '#7be07b', '#ffb347', '#ff6b5b', '#fff0c8', '#ffd9a0'],
+  }
+  const targets = []
+  for (const [kind, hexes] of Object.entries(EMITTERS))
+    for (const hex of hexes) targets.push({ kind, hex, c: new THREE.Color(hex).multiplyScalar(1.05) })
+  const TOL = 0.012
+  const clusters = new Map()
+  const v = new THREE.Vector3()
+  model.updateMatrixWorld(true)
+  model.traverse((o) => {
+    if (!o.isMesh) return
+    const col = o.geometry.getAttribute('color')
+    const pos = o.geometry.getAttribute('position')
+    const glow = new Float32Array(pos.count)
+    if (col) {
+      for (let i = 0; i < col.count; i++) {
+        const r = col.getX(i), g = col.getY(i), b = col.getZ(i)
+        for (const t of targets) {
+          if (Math.abs(r - t.c.r) < TOL && Math.abs(g - t.c.g) < TOL && Math.abs(b - t.c.b) < TOL) {
+            glow[i] = t.kind === 'window' ? 2 : 1
+            if (t.kind === 'halo' && o.name !== 'Drum') { // the drum spins; a fixed halo would drift off it
+              v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld)
+              const key = `${Math.round(v.x / 0.12)},${Math.round(v.y / 0.12)},${Math.round(v.z / 0.12)}`
+              const k = clusters.get(key) ?? { sum: new THREE.Vector3(), n: 0, hex: t.hex, node: o }
+              k.sum.add(v)
+              k.n++
+              clusters.set(key, k)
+            }
+            break
+          }
+        }
+      }
+    }
+    o.geometry.setAttribute('aGlow', new THREE.BufferAttribute(glow, 1))
+  })
+  return [...clusters.values()].map((k) => ({ pos: k.sum.divideScalar(k.n), hex: k.hex }))
+}
+
+/* Additive glow sprites at each small emitter; size and strength follow the night amount. */
+function makeHalos(THREE, sources) {
+  const n = sources.length
+  const pos = new Float32Array(n * 3)
+  const col = new Float32Array(n * 3)
+  const seed = new Float32Array(n)
+  const c = new THREE.Color()
+  sources.forEach((s, i) => {
+    pos.set([s.pos.x, s.pos.y, s.pos.z], i * 3)
+    c.set(s.hex)
+    col.set([c.r, c.g, c.b], i * 3)
+    seed[i] = Math.random()
+  })
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+  g.setAttribute('aColor', new THREE.BufferAttribute(col, 3))
+  g.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1))
+  const mat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    depthTest: true,
+    blending: THREE.AdditiveBlending,
+    uniforms: { uTime: { value: 0 }, uScale: { value: 1 }, uNight: { value: 0 } },
+    vertexShader: `
+      attribute vec3 aColor;
+      attribute float aSeed;
+      uniform float uTime, uScale, uNight;
+      varying vec3 vColor;
+      varying float vA;
+      void main() {
+        vColor = aColor;
+        vA = uNight * (0.8 + 0.2 * sin(uTime * (1.5 + aSeed * 2.0) + aSeed * 30.0)); // gentle twinkle
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        mv.z += 0.3; // pull toward the camera so the halo isn't cut by the bulb itself
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = clamp(uScale * 0.55, 6.0, 90.0);
+      }`,
+    fragmentShader: `
+      varying vec3 vColor;
+      varying float vA;
+      void main() {
+        float d = length(gl_PointCoord - 0.5) * 2.0;
+        float a = exp(-d * d * 5.0) * (1.0 - smoothstep(0.8, 1.0, d)) * vA * 0.55;
+        gl_FragColor = vec4(vColor * a, 1.0);
+      }`,
+  })
+  const points = new THREE.Points(g, mat)
+  points.frustumCulled = false
+  points.renderOrder = 2
+  return {
+    points,
+    count: n,
+    update(t, pxPerUnit, nightAmount) {
+      mat.uniforms.uTime.value = t
+      mat.uniforms.uScale.value = pxPerUnit
+      mat.uniforms.uNight.value = nightAmount
+      points.visible = nightAmount > 0.01
     },
   }
 }

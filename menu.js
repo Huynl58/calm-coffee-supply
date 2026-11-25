@@ -54,3 +54,37 @@
   addEventListener("resize", onScroll);
   update();
 })();
+
+// Light / dark theme. Follows the system until the visitor picks one (saved as "ccs-theme").
+// The <head> script applies a saved choice before first paint; this wires the header button
+// (wide screens) and the "Light | Dark" switch in the menu panel, and tells the 3D hero ("themechange").
+(() => {
+  const root = document.documentElement;
+  const systemDark = matchMedia("(prefers-color-scheme: dark)");
+  const vi = root.lang !== "en";
+  const L = vi ? { toDark: "Giao diện tối", toLight: "Giao diện sáng" } : { toDark: "Dark theme", toLight: "Light theme" };
+  const current = () => root.dataset.theme || (systemDark.matches ? "dark" : "light");
+
+  const sync = () => {
+    const t = current();
+    document.querySelectorAll(".theme-toggle").forEach((b) => {
+      b.setAttribute("aria-label", t === "dark" ? L.toLight : L.toDark);
+      b.title = t === "dark" ? L.toLight : L.toDark;
+    });
+    document.querySelectorAll("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeSet === t)));
+    dispatchEvent(new CustomEvent("themechange", { detail: t }));
+  };
+  const set = (t) => {
+    if (t === current()) return;
+    root.classList.add("theme-anim");
+    root.dataset.theme = t;
+    try { localStorage.setItem("ccs-theme", t); } catch {}
+    sync();
+    setTimeout(() => root.classList.remove("theme-anim"), 700);
+  };
+
+  document.querySelectorAll(".theme-toggle").forEach((b) => b.addEventListener("click", () => set(current() === "dark" ? "light" : "dark")));
+  document.querySelectorAll("[data-theme-set]").forEach((b) => b.addEventListener("click", () => set(b.dataset.themeSet)));
+  systemDark.addEventListener("change", () => { if (!root.dataset.theme) sync(); });
+  sync();
+})();
